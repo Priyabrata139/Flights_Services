@@ -46,3 +46,7 @@ Lets take a look inside the `src` folder
  ```
  npm run dev
  ```
+# Use this commmand in the mysql cmdline to check the forgien keys 
+ ```
+SELECT TABLE_NAME,COLUMN_NAME,CONSTRAINT_NAME,REFERENCED_TABLE_NAME,REFERENCED_COLUMN_NAME FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE WHERE REFERENCED_TABLE_SCHEMA = 'database-name' AND REFERENCED_TABLE_NAME = 'table-name';
+ ```
