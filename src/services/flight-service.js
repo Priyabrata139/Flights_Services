@@ -84,7 +84,63 @@ async function getAllFlights(query) {
     }
 
 }
+
+
+async function getFlight(id) {
+    try {
+        const flight = await flightRepository.get(id);
+        return flight;
+    } catch(error) {
+        if(error.statusCode == StatusCodes.NOT_FOUND) {
+            throw new AppError('The flight you requested is not present', error.statusCode);
+        }
+        throw new AppError('Cannot fetch data of all the flights', StatusCodes.INTERNAL_SERVER_ERROR);
+    }
+}
+
+async function updateFlight(data,id) {
+    try {
+       
+        const flight = await flightRepository.update(data,id);
+        return flight;
+    } catch(error) { 
+        console.log(error);
+        if(error.statusCode == StatusCodes.NOT_FOUND) {
+            throw new AppError('The flight you requested to update is not present', error.statusCode);
+        }
+        else if(error.name == 'SequelizeValidationError') {
+            let explanation = [];
+            error.errors.forEach((err) => {
+                explanation.push(err.message);
+            });
+            throw new AppError(explanation, StatusCodes.BAD_REQUEST);
+        }
+        throw new AppError('Cannot fetch data of all the flights', StatusCodes.INTERNAL_SERVER_ERROR);
+    }
+}
+
+
+
+
+
+async function updateSeats(data) {
+    try {
+        const response = await flightRepository.updateRemainingSeats(data.flightId, data.seats, data.dec);
+        return response;
+    } catch(error) {
+       
+        if(error.statusCode == StatusCodes.NOT_FOUND) {
+            throw new AppError('The flight you requested to update is not present', error.statusCode);
+        }
+        throw new AppError('Cannot update data of the flight', StatusCodes.INTERNAL_SERVER_ERROR);
+    }
+}
+
 module.exports={
     createFlight,
-    getAllFlights
+    getAllFlights,
+    getFlight,
+    updateFlight,
+    updateSeats
+    
 }
