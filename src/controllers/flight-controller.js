@@ -19,13 +19,16 @@ async function createFlight(req, res) {
     SuccessResponse.data = Flight;
     return res.status(StatusCodes.CREATED).json(SuccessResponse);
   } catch (error) {
+    console.log('error=',error);
     ErrorResponse.message = "Cannot created the Flight";
     ErrorResponse.error = error;
-    return res.status(error.StatusCodes).json(ErrorResponse);
+    return res.status(error.statusCode).json(ErrorResponse);
+    
   }
 }
 
 async function getAllFlights(req, res) {
+  console.log('inside flights api= ',req.body);
   try {
     const Flights = await FlightService.getAllFlights(req.query);
     SuccessResponse.data = Flights;

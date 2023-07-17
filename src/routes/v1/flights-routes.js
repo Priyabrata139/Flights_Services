@@ -1,14 +1,15 @@
 const  express  = require('express');
 const router = express.Router();
-const { FlightMiddlewares } = require('../../middlewares');
+const { FlightMiddlewares, AuthRequestMiddlewares } = require('../../middlewares');
 const {  FlightController } = require('../../controllers');
 console.log(router);
 
-router.post('/',FlightMiddlewares.validateCreateRequest,FlightController.createFlight);
+router.post('/',AuthRequestMiddlewares.isAdminOrFlightCompany, FlightMiddlewares.validateCreateRequest, FlightController.createFlight);
 
 router.get('/',FlightController.getAllFlights);
 
 router.patch('/:id',
+AuthRequestMiddlewares.isAdminOrFlightCompany,
 FlightMiddlewares.validateUpdateRequest, 
 FlightController.updateFlight);
 
@@ -20,6 +21,7 @@ FlightController.getFlight);
 // /api/v1/flights/:id/seats PATCH
 router.patch(
     '/:id/seats', 
+    AuthRequestMiddlewares.isAdminOrFlightCompany,
     FlightMiddlewares.validateUpdateSeatsRequest,
     FlightController.updateSeats
 );
