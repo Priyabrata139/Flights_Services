@@ -21,8 +21,8 @@ FlightController.getFlight);
 // /api/v1/flights/:id/seats PATCH
 router.patch(
     '/:id/seats', 
-    AuthRequestMiddlewares.isAdminOrFlightCompany,
     FlightMiddlewares.validateUpdateSeatsRequest,
+    AuthRequestMiddlewares.isAuthorisedForUpdateflightsSeats,
     FlightController.updateSeats
 );
 

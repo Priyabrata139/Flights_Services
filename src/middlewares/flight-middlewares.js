@@ -110,8 +110,24 @@ async function validateUpdateRequest(req, res, next) {
 
 function validateUpdateSeatsRequest(req, res, next) {
     if(!req.body.seats) {
-        ErrorResponse.message = 'Something went wrong while creating flight';
+        ErrorResponse.message = 'Something went wrong while updateing flight setas';
         ErrorResponse.error = new AppError(['seats not found in the incoming request in the correct form'], StatusCodes.BAD_REQUEST);
+        return res
+                .status(StatusCodes.BAD_REQUEST)
+                .json(ErrorResponse);
+    }
+
+    if(!req.headers['jwt_token']) {
+        ErrorResponse.message = 'Something went wrong while updateing flight seats';
+        ErrorResponse.error = new AppError(['jwt_token is not found in the incoming request headers in the correct form'], StatusCodes.BAD_REQUEST);
+        return res
+                .status(StatusCodes.BAD_REQUEST)
+                .json(ErrorResponse);
+    }
+
+    if(!req.headers['jwt_secret_key']) {
+        ErrorResponse.message = 'Something went wrong while updateing flight seats';
+        ErrorResponse.error = new AppError(['jwt_secret_key is not found in the incoming request headers in the correct form'], StatusCodes.BAD_REQUEST);
         return res
                 .status(StatusCodes.BAD_REQUEST)
                 .json(ErrorResponse);
