@@ -125,13 +125,7 @@ function validateUpdateSeatsRequest(req, res, next) {
                 .json(ErrorResponse);
     }
 
-    if(!req.headers['jwt_secret_key']) {
-        ErrorResponse.message = 'Something went wrong while updateing flight seats';
-        ErrorResponse.error = new AppError(['jwt_secret_key is not found in the incoming request headers in the correct form'], StatusCodes.BAD_REQUEST);
-        return res
-                .status(StatusCodes.BAD_REQUEST)
-                .json(ErrorResponse);
-    }
+
     next();
 }
 module.exports={

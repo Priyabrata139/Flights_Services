@@ -3,6 +3,7 @@ const { StatusCodes } = require("http-status-codes");
 const { ErrorResponse } = require("../utils/common");
 const AppError = require("../utils/errors/app-error");
 var jwt = require('jsonwebtoken');
+const { ServerConfig } = require("../config");
 
 
 async function isAdminOrFlightCompany(req, res, next) {
@@ -52,7 +53,7 @@ async function isAdmin(req, res, next) {
 
     try {
       const token = req.headers["jwt_token"];
-      const jwt_secret_key = req.headers["jwt_secret_key"];
+      const jwt_secret_key = ServerConfig.JWT_SECRET_KEY;
       var decoded = jwt.verify(token, jwt_secret_key);
       next();
     } catch (error) {
