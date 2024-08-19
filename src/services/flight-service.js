@@ -4,7 +4,7 @@ const { FlightRepository } = require("../repositories");
 const AppError = require("../utils/errors/app-error");
 const { Op } = require("sequelize");
 const db = require("../models");
-console.log(FlightRepository);
+
 const flightRepository = new FlightRepository();
 
 async function createFlight(data) {
