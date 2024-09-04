@@ -4,14 +4,24 @@ const { FlightRepository } = require("../repositories");
 const AppError = require("../utils/errors/app-error");
 const { Op } = require("sequelize");
 const db = require("../models");
+const { compareTime } = require("../utils/helpers/date-time-helper");
 
 const flightRepository = new FlightRepository();
 
 async function createFlight(data) {
   try {
+    if (!compareTime(data.departureTime, data.arrivalTime)) {
+      throw new AppError(
+        [`Arrivaltime is smaller than departuretime`],
+        StatusCodes.BAD_REQUEST
+      );
+    }
     const response = await flightRepository.create(data);
     return response;
   } catch (error) {
+    if (error instanceof AppError) {
+      throw error;
+    }
     if (error.name == "SequelizeUniqueConstraintError") {
       let explantion = [];
       error.errors.forEach((err) => {
