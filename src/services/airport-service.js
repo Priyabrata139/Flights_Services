@@ -1,11 +1,10 @@
 const { StatusCodes } = require("http-status-codes");
 
-const { AirportRepository, CityRepository } = require("../repositories");
+const { AirportRepository } = require("../repositories");
 const AppError = require("../utils/errors/app-error");
 const CityService = require("./city-service");
 
 const airportRepository = new AirportRepository();
-const cityRepository = new CityRepository();
 
 async function createAirport(data) {
   try {
@@ -37,9 +36,10 @@ async function createAirport(data) {
 
 async function getAirports() {
   try {
-    const airports = await airportsRepository.getAll();
+    const airports = await airportRepository.getAll();
     return airports;
   } catch (error) {
+    console.log;
     throw new AppError(
       "Cannot fetch data of all the airports",
       StatusCodes.INTERNAL_SERVER_ERROR
