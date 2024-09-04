@@ -26,4 +26,10 @@ router.delete(
   CityController.destroyCity
 );
 
+// /api/v1/cities/:id GET
+router.get("/:id", AuthRequestMiddlewares.isAdmin, CityController.getCity);
+
+// /api/v1/cities/ GET
+router.get("/", AuthRequestMiddlewares.isAdmin, CityController.getCities);
+
 module.exports = router;
