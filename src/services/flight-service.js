@@ -41,12 +41,16 @@ async function getAllFlights(query) {
   try {
     let customFilter = {};
     let sortFilter;
+    const extraAmount = 1000;
     if (query.trips) {
       let departureAirportId, arrivalAirportId;
       [departureAirportId, arrivalAirportId] = query.trips.split("-");
-
-      customFilter.departureAirportId = departureAirportId;
-      customFilter.arrivalAirportId = arrivalAirportId;
+      if (departureAirportId && arrivalAirportId) {
+        customFilter.departureAirportId = departureAirportId;
+        customFilter.arrivalAirportId = arrivalAirportId;
+      } else {
+        throw new AppError([`Invalid trips filter`], StatusCodes.BAD_REQUEST);
+      }
     }
     if (query.price) {
       let startingPrice, endingPrice;
@@ -54,7 +58,7 @@ async function getAllFlights(query) {
 
       [startingPrice, endingPrice] = query.price.split("-");
 
-      defaultEndingPrice = parseInt(startingPrice) + 1000;
+      defaultEndingPrice = parseInt(startingPrice) + extraAmount;
       customFilter.price = {
         [Op.between]: [
           startingPrice,
@@ -77,7 +81,6 @@ async function getAllFlights(query) {
       customFilter.departureTime = {
         [Op.between]: [startingDepartureTime, endingDepartureTime],
       };
-      console.log(endingDepartureTime);
     }
 
     if (query.sort) {
@@ -85,6 +88,7 @@ async function getAllFlights(query) {
       console.log(params);
       sortFilter = params.map((val) => val.split("_"));
     }
+    // sortFilter= [ [ 'departureTime', 'DESC' ], [ 'price', 'ASC' ] ]
 
     const Flights = await flightRepository.getAllFlights(
       customFilter,
@@ -93,8 +97,11 @@ async function getAllFlights(query) {
     return Flights;
   } catch (error) {
     console.log(error);
+    if (error instanceof AppError) {
+      throw error;
+    }
     throw new AppError(
-      ["Something went wrong while creating the fligjt"],
+      ["Something went wrong while getting the flights"],
       StatusCodes.INTERNAL_SERVER_ERROR
     );
   }
@@ -137,7 +144,7 @@ async function updateFlight(data, id) {
       throw new AppError(explanation, StatusCodes.BAD_REQUEST);
     }
     throw new AppError(
-      "Cannot fetch data of all the flights",
+      "Cannot update the flight",
       StatusCodes.INTERNAL_SERVER_ERROR
     );
   }
